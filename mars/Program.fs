@@ -21,7 +21,9 @@ let main argv =
     let clientId = argv[0]
     let clientSecret = argv[1]
 
-    let authorizeUrl = UriBuilder("https", AuthorizeHost)
+    let authorizeUrl =
+        UriBuilder(Uri.UriSchemeHttps, AuthorizeHost)
+
     authorizeUrl.Path <- AuthorizePath
 
     let authorizeQuery =
@@ -47,7 +49,10 @@ let main argv =
     |> List.iter request.Add
 
     let client = new HttpClient()
-    let accessTokenUrl = UriBuilder("https", AuthorizeHost)
+
+    let accessTokenUrl =
+        UriBuilder(Uri.UriSchemeHttps, AuthorizeHost)
+
     accessTokenUrl.Path <- AccessTokenPath
 
     let response =
