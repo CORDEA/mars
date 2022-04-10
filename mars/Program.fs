@@ -1,5 +1,7 @@
 ﻿open System
+open System.IO
 open System.Net.Http
+open FSharp.Data
 
 let Host = "api.instagram.com"
 let AuthorizePath = "oauth/authorize"
@@ -45,5 +47,20 @@ let main argv =
         client.PostAsync(accessTokenUrl.ToString(), request)
         |> Async.AwaitTask
         |> Async.RunSynchronously
+
+    let json =
+        response.Content.ReadAsStringAsync()
+        |> Async.AwaitTask
+        |> Async.RunSynchronously
+        |> JsonValue.Parse
+
+    let token =
+        json.TryGetProperty("access_token")
+        |> (fun v ->
+            match v with
+            | None -> raise (InvalidDataException "Access token is not included.")
+            | Some token -> token.AsString())
+
+    printfn $"{token}"
 
     0
